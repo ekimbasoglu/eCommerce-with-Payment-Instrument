@@ -1,27 +1,44 @@
 const express = require('express');
 const basicAuth = require('express-basic-auth');
 const mongoose = require('mongoose');
-
-// Configure basic authentication credentials
-const authConfig = {
-    users: { 'username': 'password' }, // Add your desired username and password here
-    unauthorizedResponse: 'Unauthorized',
-};
-
-// Create an Express application
+require('dotenv').config();
+const cors = require('cors');
 const app = express();
 
-// Middleware for basic authentication
-app.use(basicAuth(authConfig));
-
-// Middleware for parsing JSON request bodies
-app.use(express.json());
+const { DB_HOST, DB_USER, DB_PASSWORD, PORT } = process.env;
+// Configure basic authentication credentials
+const authConfig = {
+    users: { DB_USER: DB_PASSWORD }, // Add your desired username and password here
+    unauthorizedResponse: 'Unauthorized',
+    db: DB_HOST
+};
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/mydatabase', {
+mongoose.connect("mongodb+srv://" + authConfig.users[0] + authConfig.db, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
+// CONNECTION EVENTS
+// When successfully connected
+mongoose.connection.on('connected', function () {
+    console.log('Mongoose default connection open');
+});
+
+// If the connection throws an error
+mongoose.connection.on('error', function (err) {
+    console.log('Mongoose default connection error: ' + err);
+});
+
+// When the connection is disconnected
+mongoose.connection.on('disconnected', function () {
+    console.log('Mongoose default connection disconnected');
+});
+
+// Cors
+app.use(cors());
+
+// Middleware for parsing JSON request bodies
+app.use(express.json());
 
 // Define a schema for your data
 const schema = new mongoose.Schema({
@@ -29,84 +46,19 @@ const schema = new mongoose.Schema({
     age: Number,
 });
 
-// Define a model based on the schema
-const Model = mongoose.model('Model', schema);
-
-// Define the routes for CRUD operations
-
-// Create a new document
-app.post('/api/models', (req, res) => {
-    const { name, age } = req.body;
-    const model = new Model({ name, age });
-
-    model.save((err, savedModel) => {
-        if (err) {
-            res.status(500).send('Error saving model');
-        } else {
-            res.status(201).json(savedModel);
-        }
-    });
+app.get('/', (req, res) => {
+    res.status(200).send("Success");
 });
 
-// Read all documents
-app.get('/api/models', (req, res) => {
-    Model.find({}, (err, models) => {
-        if (err) {
-            res.status(500).send('Error retrieving models');
-        } else {
-            res.json(models);
-        }
-    });
-});
+// Imports 
+const users = require('./routes/User');
 
-// Read a specific document
-app.get('/api/models/:id', (req, res) => {
-    const { id } = req.params;
+//Routers
+app.use(users);
 
-    Model.findById(id, (err, model) => {
-        if (err) {
-            res.status(500).send('Error retrieving model');
-        } else if (!model) {
-            res.status(404).send('Model not found');
-        } else {
-            res.json(model);
-        }
-    });
-});
 
-// Update a document
-app.put('/api/models/:id', (req, res) => {
-    const { id } = req.params;
-    const { name, age } = req.body;
-
-    Model.findByIdAndUpdate(id, { name, age }, { new: true }, (err, updatedModel) => {
-        if (err) {
-            res.status(500).send('Error updating model');
-        } else if (!updatedModel) {
-            res.status(404).send('Model not found');
-        } else {
-            res.json(updatedModel);
-        }
-    });
-});
-
-// Delete a document
-app.delete('/api/models/:id', (req, res) => {
-    const { id } = req.params;
-
-    Model.findByIdAndDelete(id, (err, deletedModel) => {
-        if (err) {
-            res.status(500).send('Error deleting model');
-        } else if (!deletedModel) {
-            res.status(404).send('Model not found');
-        } else {
-            res.sendStatus(204);
-        }
-    });
-});
 
 // Start the server
-const port = 3000;
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
