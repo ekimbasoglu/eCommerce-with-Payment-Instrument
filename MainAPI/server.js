@@ -5,16 +5,16 @@ require('dotenv').config();
 const cors = require('cors');
 const app = express();
 
+
 const { DB_HOST, DB_USER, DB_PASSWORD, PORT } = process.env;
 // Configure basic authentication credentials
 const authConfig = {
-    users: { DB_USER: DB_PASSWORD }, // Add your desired username and password here
     unauthorizedResponse: 'Unauthorized',
     db: DB_HOST
 };
 
 // Connect to MongoDB
-mongoose.connect("mongodb+srv://" + authConfig.users[0] + authConfig.db, {
+mongoose.connect("mongodb+srv://" + authConfig.db, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
