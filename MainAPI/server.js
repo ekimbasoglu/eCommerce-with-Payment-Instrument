@@ -4,15 +4,14 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const cors = require('cors');
 const app = express();
-const autoIncrement = require('./utils/mongoose-auto-increment');
+const AutoIncrement = require('mongoose-sequence')(mongoose);
 
-
-const { DB_HOST, DB_USER, DB_PASSWORD, PORT } = process.env;
 // Configure basic authentication credentials
 const authConfig = {
     unauthorizedResponse: 'Unauthorized',
-    db: DB_HOST
+    db: process.env.DB_HOST
 };
+
 // Connect to MongoDB
 mongoose.connect("mongodb+srv://" + authConfig.db, {
     useNewUrlParser: true,
@@ -34,8 +33,8 @@ mongoose.connection.on('disconnected', function () {
     console.log('Mongoose default connection disconnected');
 });
 
-const db = mongoose.connection;
-autoIncrement.initialize(db);
+// const connection = mongoose.connection;
+
 
 // Cors
 app.use(cors());
@@ -64,6 +63,6 @@ app.use('/product', products);
 
 
 // Start the server
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+app.listen(process.env.PORT, () => {
+    console.log(`Server is running on port ${process.env.PORT}`);
 });

@@ -3,7 +3,7 @@ const app = Router();
 require('dotenv').config();
 const Product = require('../models/Product');
 
-exports.get = function (req, res) {
+exports.get = async (req, res) => {
     const id = req.query.id;
 
     //Missing fields
@@ -25,7 +25,7 @@ exports.get = function (req, res) {
         });
 };
 
-exports.post = function (req, res) {
+exports.post = async (req, res) => {
     const description = req.body.description,
         name = req.body.name,
         stock = req.body.stock,
@@ -62,8 +62,43 @@ exports.post = function (req, res) {
             console.error('Error:', error);
         });
 };
-exports.patch = function (req, res) {
+
+exports.patch = async (req, res) => {
+    const productId = req.params.id;
+    const updateData = req.body;
+
+    try {
+        // Find the product by ID and update it with the provided data
+        const updatedProduct = await Product.findByIdAndUpdate(productId, updateData, { new: true });
+
+        if (!updatedProduct) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+
+        // Return the updated product as the response
+        res.json(updatedProduct);
+    } catch (error) {
+        // Handle any errors that occur during the update process
+        res.status(500).json({ error: 'Failed to update product' });
+    }
+
 };
-exports.delete = function (req, res) {
+exports.delete = async (req, res) => {
+    const productId = req.params.id;
+
+    try {
+        // Find the product by ID and delete it
+        const deletedProduct = await Product.findByIdAndDelete(productId);
+
+        if (!deletedProduct) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+
+        // Return a success message as the response
+        res.json({ message: 'Product deleted successfully' });
+    } catch (error) {
+        // Handle any errors that occur during the delete process
+        res.status(500).json({ error: 'Failed to delete product' });
+    }
 };
 

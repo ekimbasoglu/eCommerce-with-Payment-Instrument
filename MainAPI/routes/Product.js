@@ -1,10 +1,11 @@
-const { Router } = require('express');
-const app = Router();
+const express = require('express');
+const router = express.Router();
 const productController = require('../controllers/Product');
+const verifyAdminRole = require('../middlewares/verifyAdminRole');
 
-app.get('/get', productController.get);
-app.post('/post', verifyAdminRole, productController.create);
-app.patch('/patch', verifyAdminRole, productController.patch);
-app.patch('/delete', verifyAdminRole, productController.delete);
+router.get('/get:id', productController.get);
+router.post('/post', verifyAdminRole, productController.post);
+router.patch('/patch:id', verifyAdminRole, productController.patch);
+router.patch('/delete', verifyAdminRole, productController.delete);
 
-module.exports = app;
+module.exports = router;
