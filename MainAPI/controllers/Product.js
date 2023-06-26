@@ -40,7 +40,7 @@ exports.post = async (req, res) => {
     Product.findOne({ name: req.body.name })
         .then((product) => {
             if (product) {
-                res.status(400).send('Product has already been created');
+                return res.status(400).send('Product has already been created');
             } else {
                 const product = {
                     name,
@@ -50,16 +50,17 @@ exports.post = async (req, res) => {
                 };
                 const newProduct = new Product(product);
                 newProduct.save();
-                res.status(200).send('Product added successfully');
+                return res.status(200).send('Product added successfully');
             }
         })
         .then((product) => {
             if (product) {
-                console.log('Product added by id: ' + product.id);
+                console.log('Product added by id: ' + product.req.body.name);
             }
         })
         .catch((error) => {
             console.error('Error:', error);
+            return res.status(400).send('Product has already been created');
         });
 };
 
@@ -76,10 +77,10 @@ exports.patch = async (req, res) => {
         }
 
         // Return the updated product as the response
-        res.json(updatedProduct);
+        return res.status(200).json(updatedProduct);
     } catch (error) {
         // Handle any errors that occur during the update process
-        res.status(500).json({ error: 'Failed to update product' });
+        return res.status(500).json({ error: 'Failed to update product' });
     }
 
 };
@@ -95,10 +96,10 @@ exports.delete = async (req, res) => {
         }
 
         // Return a success message as the response
-        res.json({ message: 'Product deleted successfully' });
+        return res.status(200).json({ message: 'Product deleted successfully' });
     } catch (error) {
         // Handle any errors that occur during the delete process
-        res.status(500).json({ error: 'Failed to delete product' });
+        return res.status(500).json({ error: 'Failed to delete product' });
     }
 };
 

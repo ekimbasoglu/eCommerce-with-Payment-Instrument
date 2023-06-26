@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const cors = require('cors');
 const app = express();
-const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 // Configure basic authentication credentials
 const authConfig = {
@@ -32,9 +31,6 @@ mongoose.connection.on('error', function (err) {
 mongoose.connection.on('disconnected', function () {
     console.log('Mongoose default connection disconnected');
 });
-
-// const connection = mongoose.connection;
-
 
 // Cors
 app.use(cors());
