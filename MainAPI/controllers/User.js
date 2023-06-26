@@ -2,9 +2,11 @@ const { Router } = require('express');
 const app = Router();
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 require('dotenv').config();
 
-exports.register = function (req, res) {
+exports.register = async (req, res) => {
     const email = req.body.email,
         name = req.body.name,
         surname = req.body.surname,
@@ -16,6 +18,9 @@ exports.register = function (req, res) {
         return;
     }
 
+    // Generate a salt
+    const salt = await bcrypt.genSalt(saltRounds);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     User.findOne({ email: req.body.email })
         .then((user) => {
@@ -26,7 +31,7 @@ exports.register = function (req, res) {
                     email,
                     name,
                     surname,
-                    password,
+                    password: hashedPassword,
                 };
                 const newUser = new User(user);
                 newUser.save();
@@ -53,19 +58,22 @@ exports.login = function (req, res) {
         return;
     }
 
+
     User.findOne({ email: req.body.email })
         .then((user) => {
             if (user) {
-                if (user.password == password) {
-                    const token = jwt.sign({ user }, process.env.SECRET); // Generate a token
-                    res.status(200).json({ token });
-                    return;
-                } else {
-                    res.status(400).send('Password is wrong!');
-                    return;
-                }
+                bcrypt.compare(password, user.password, (err, result) => {
+                    if (err) {
+                        return res.status(400).send('Something is wrong!');
+                    } else if (result) {
+                        const token = jwt.sign({ user }, process.env.SECRET); // Generate a token
+                        return res.status(200).json({ token });
+                    } else {
+                        return res.status(400).send('Password is wrong!');
+                    }
+                });
             } else {
-                res.status(400).send('User doesnt exist!');
+                return res.status(400).send('User doesnt exist');
             }
         })
         .catch((error) => {
