@@ -53,7 +53,6 @@ exports.post = async (req, res) => {
         return;
     }
 
-
     try {
         // Check if a product with the same name already exists
         const existingProduct = await Product.findOne({ name });

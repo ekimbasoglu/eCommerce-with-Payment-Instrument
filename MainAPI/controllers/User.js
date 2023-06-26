@@ -6,6 +6,19 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 require('dotenv').config();
 const useRS256 = process.env.CUSTOMPREF_USERS256 ? process.env.CUSTOMPREF_USERS256 : false;
+const useSalt = process.env.CUSTOMPREF_USESALT ? process.env.CUSTOMPREF_USESALT : false;
+const argon2 = require('argon2');
+
+// To hash the password with Argon2, instead salting
+async function hashPassword(password) {
+    try {
+        const hash = await argon2.hash(password);
+        return hash;
+    } catch (err) {
+        // Handle hashing error
+        throw new Error('Password hashing failed');
+    }
+}
 
 exports.register = async (req, res) => {
     const email = req.body.email,
@@ -19,9 +32,15 @@ exports.register = async (req, res) => {
         return;
     }
 
-    // Generate a salt
-    const salt = await bcrypt.genSalt(saltRounds);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    var hashedPassword; // undef
+    if (useSalt === 'true') {
+        // Generate a salt
+        const salt = await bcrypt.genSalt(saltRounds);
+        hashedPassword = await bcrypt.hash(password, salt);
+    } else {
+        // Using argon2
+        hashedPassword = await hashPassword(password);
+    }
 
     if (useRS256 === 'false') {
         User.findOne({ email: req.body.email })
@@ -96,18 +115,34 @@ exports.login = function (req, res) {
 
     if (useRS256 === 'false') {
         User.findOne({ email: req.body.email })
-            .then((user) => {
+            .then(async (user) => {
                 if (user) {
-                    bcrypt.compare(password, user.password, (err, result) => {
-                        if (err) {
+                    // Using salt
+
+                    if (useSalt === 'true') {
+                        bcrypt.compare(password, user.password, (err, result) => {
+                            if (err) {
+                                return res.status(400).send('Something is wrong!');
+                            } else if (result) {
+                                const token = jwt.sign({ user }, process.env.SECRET); // Generate a token
+                                return res.status(200).json({ token });
+                            } else {
+                                return res.status(400).send('Password is wrong!');
+                            }
+                        });
+                    } else {
+                        try {
+                            const match = await argon2.verify(user.password, password);
+                            if (match == true) {
+                                const token = jwt.sign({ user }, process.env.SECRET); // Generate a token
+                                return res.status(200).json({ token });
+                            } else {
+                                return res.status(400).send('Password is wrong!');
+                            }
+                        } catch (err) {
                             return res.status(400).send('Something is wrong!');
-                        } else if (result) {
-                            const token = jwt.sign({ user }, process.env.SECRET); // Generate a token
-                            return res.status(200).json({ token });
-                        } else {
-                            return res.status(400).send('Password is wrong!');
                         }
-                    });
+                    }
                 } else {
                     return res.status(400).send('User doesnt exist');
                 }

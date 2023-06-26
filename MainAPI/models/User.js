@@ -9,7 +9,11 @@ const User = new mongoose.Schema({
     basket: { type: Array },
     selectedPaymentMethodId: { type: String },
     address: { type: String },
-    roles: { type: String, default: 'User' }
+    roles: { type: String, default: 'User' },
+    preorders: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Preorder'
+    }]
 });
 // const Admin = new Schema({
 //     email: { type: String, require: true },
