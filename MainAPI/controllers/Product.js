@@ -4,7 +4,7 @@ require('dotenv').config();
 const Product = require('../models/Product');
 
 exports.get = async (req, res) => {
-    const id = req.query.id;
+    const id = req.params.id;
 
     //Missing fields
     if (!id) {
@@ -12,7 +12,7 @@ exports.get = async (req, res) => {
         return;
     }
 
-    Product.findOne({ id })
+    Product.findOne({ _id: id })
         .then((product) => {
             if (product) {
                 res.status(200).json({ product });
@@ -25,43 +25,56 @@ exports.get = async (req, res) => {
         });
 };
 
+exports.getAll = async (req, res) => {
+
+    try {
+        // Retrieve all products from the database
+        const products = await Product.find();
+
+        // Return the products as the response
+        res.json(products);
+    } catch (error) {
+        // Handle any errors that occur during the retrieval process
+        res.status(500).json({ error: 'Failed to retrieve products' });
+    }
+
+};
+
 exports.post = async (req, res) => {
     const description = req.body.description,
         name = req.body.name,
         stock = req.body.stock,
+        price = req.body.price,
         image = req.body.image;
 
     //Missing fields
-    if (!stock || !name || !description) {
+    if (!stock || !name || !description || !price) {
         res.status(400).send('Field is missing');
         return;
     }
 
-    Product.findOne({ name: req.body.name })
-        .then((product) => {
-            if (product) {
-                return res.status(400).send('Product has already been created');
-            } else {
-                const product = {
-                    name,
-                    description,
-                    stock,
-                    image,
-                };
-                const newProduct = new Product(product);
-                newProduct.save();
-                return res.status(200).send('Product added successfully');
-            }
-        })
-        .then((product) => {
-            if (product) {
-                console.log('Product added by id: ' + product.req.body.name);
-            }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            return res.status(400).send('Product has already been created');
-        });
+
+    try {
+        // Check if a product with the same name already exists
+        const existingProduct = await Product.findOne({ name });
+
+        if (existingProduct) {
+            return res.status(409).json({ error: 'Product with the same name already exists' });
+        }
+
+        // Create a new product
+        const product = { name, description, stock, price, image };
+        const newProduct = new Product(product);
+
+        // Save the new product
+        const createdProduct = await newProduct.save();
+
+        // Return the created product as the response
+        res.status(201).json(createdProduct);
+    } catch (error) {
+        // Handle any errors that occur during the create process
+        res.status(500).json({ error: 'Failed to create product' });
+    }
 };
 
 exports.patch = async (req, res) => {
