@@ -73,3 +73,15 @@ exports.login = function (req, res) {
         });
 };
 
+// POST route for logging out and deleting the JWT token
+exports.logout = async (req, res) => {
+    var sess = req.session.user;
+
+    if (req.user && req.user.deleteToken) {
+        req.user.deleteToken(); // Invoke the deleteToken function to delete or invalidate the token
+    }
+
+    // Return a success message as the response
+    res.json({ message: 'Logged out successfully' });
+};
+
