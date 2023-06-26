@@ -30,7 +30,8 @@ exports.register = function (req, res) {
                 };
                 const newUser = new User(user);
                 newUser.save();
-                res.status(200).send('User registered successfully');
+                const token = jwt.sign({ email }, process.env.SECRET); // Generate a token
+                res.status(200).send('User registered successfully').json(token);
             }
         })
         .then(() => {
@@ -56,7 +57,7 @@ exports.login = function (req, res) {
         .then((user) => {
             if (user) {
                 if (user.password == password) {
-                    const token = jwt.sign({ email }, process.env.SECRET); // Generate a token
+                    const token = jwt.sign({ user }, process.env.SECRET); // Generate a token
                     res.status(200).json({ token });
                     return;
                 } else {
