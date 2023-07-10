@@ -61,6 +61,6 @@ app.use('/product', products);
 
 
 // Start the server
-app.listen(process.env.PORT || 3000, () => {
+app.listen(process.env.PORT || 80, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
 });
