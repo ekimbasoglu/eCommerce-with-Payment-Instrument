@@ -12,7 +12,7 @@
 
       <div class="inputBox">
 
-       <input type="text" required [(ngModel)]="loginObj.userName"> <i>Username</i>
+       <input type="text" required [(ngModel)]="loginObj.email"> <i>Email</i>
 
       </div>
 
@@ -22,13 +22,13 @@
 
       </div>
 
-      <div class="links"> <a href="#">Forgot Password</a> <a href="#">Signup</a>
+      <div class="links"> <a href="#">Forgot Password</a> <a routerLink="/register" routerLinkActive="active">Signup</a>
 
       </div>
 
       <div class="inputBox">
 
-       <input type="button" value="Login" (click)="onLogin()">
+       <input type="button" value="Login" (click)="onLogin(loginObj.email, loginObj.password)">
 
       </div>
 
