@@ -65,7 +65,7 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.authToken;
+    return localStorage.getItem('authToken') === null ? false : true;
   }
 
   logout(): void {

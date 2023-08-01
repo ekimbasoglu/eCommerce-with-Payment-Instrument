@@ -7,28 +7,25 @@ import {
   UrlTree,
 } from '@angular/router';
 import { Observable } from 'rxjs';
+import { AuthService } from './authService';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthGuard implements CanActivate {
-  constructor(private router: Router) {}
-
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ):
+export class AuthGuard {
+  constructor(private authService: AuthService, private router: Router) {}
+  canActivate():
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    debugger;
-    const userName = localStorage.getItem('loginUserName');
-    if (userName != null) {
-      return true;
-    } else {
-      this.router.navigateByUrl('login');
-      return false;
+    if (!this.authService.isLoggedIn()) {
+      console.log('if works!');
+      this.router.navigate(['/login']);
     }
+
+    // logged in, so return true
+    this.authService.isLoggedIn();
+    return true;
   }
 }
