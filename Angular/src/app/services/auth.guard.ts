@@ -25,7 +25,6 @@ export class AuthGuard {
     }
 
     // logged in, so return true
-    this.authService.isLoggedIn();
-    return true;
+    return this.authService.isLoggedIn();
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/authService';
 
@@ -8,18 +8,26 @@ import { AuthService } from '../services/authService';
   styleUrls: ['./login.component.css'],
   providers: [AuthService],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginObj: any = {
     userName: '',
     password: '',
   };
   constructor(private router: Router, private authService: AuthService) {}
+
+  ngOnInit(): void {
+    console.log('test');
+    if (localStorage.getItem('authToken') !== null) {
+      this.router.navigate(['/']);
+    }
+  }
+
   onLogin(email: string, password: string) {
     this.authService.login(email, password).subscribe(
       (response) => {
         // Handle successful login
         console.log('Login successful');
-        this.router.navigate(['/']);
+        this.router.navigate(['/dashboard']);
       },
       (error) => {
         // Handle login error
