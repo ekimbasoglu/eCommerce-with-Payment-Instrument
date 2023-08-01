@@ -9,14 +9,14 @@ import { AuthService } from '../services/authService';
   providers: [AuthService],
 })
 export class LoginComponent implements OnInit {
-  loginObj: any = {
-    userName: '',
-    password: '',
-  };
   constructor(private router: Router, private authService: AuthService) {}
 
+  loginObj: any = {
+    email: '',
+    password: '',
+  };
+
   ngOnInit(): void {
-    console.log('test');
     if (localStorage.getItem('authToken') !== null) {
       this.router.navigate(['/']);
     }

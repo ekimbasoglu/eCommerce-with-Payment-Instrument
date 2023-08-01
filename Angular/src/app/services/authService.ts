@@ -75,13 +75,24 @@ export class AuthService {
   }
 
   register(
-    email: string,
-    password: string,
     name: string,
-    surname: string
+    surname: string,
+    email: string,
+    password: string
   ): Observable<any> {
-    const body = { email, password, name, surname };
+    const body = { name, surname, email, password };
 
-    return this.http.post(`${this.apiUrl}/user/register`, body);
+    return this.http
+      .post(
+        `${this.apiUrl}/user/register`,
+        { name, surname, email, password },
+        { responseType: 'text' }
+      )
+      .pipe(
+        tap((response: any) => {
+          alert('User successfully created!');
+          this.router.navigate(['/login']);
+        })
+      );
   }
 }
