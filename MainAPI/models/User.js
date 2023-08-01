@@ -9,6 +9,8 @@ const User = new mongoose.Schema({
     basket: { type: Array },
     selectedPaymentMethodId: { type: String },
     address: { type: String },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
     roles: { type: String, default: 'User' },
     preorders: [{
         type: mongoose.Schema.Types.ObjectId,
