@@ -33,10 +33,7 @@ export class AuthService {
   }
 
   private convertTokenToUserModel(token: string): void {
-    // Assuming you have a User model class
-    // and a method to convert the token to a user model
     const user = this.convertTokenToUser(token);
-    // Do something with the user model, such as store it in a service or component
   }
 
   private convertTokenToUser(token: string): any {
