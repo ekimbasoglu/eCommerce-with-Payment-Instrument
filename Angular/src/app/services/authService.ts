@@ -14,7 +14,7 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/user/forgetpassword`, { email });
   }
 
-  private apiUrl = 'http://localhost:3000'; // API Endpoint
+  private apiUrl = 'https://localhost:3000'; // API Endpoint
   private authToken: string;
 
   constructor(private http: HttpClient, private router: Router) {}

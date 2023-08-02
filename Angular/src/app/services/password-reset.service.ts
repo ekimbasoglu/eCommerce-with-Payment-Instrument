@@ -8,7 +8,7 @@ export class PasswordResetService {
   constructor(private http: HttpClient) {}
 
   resetPassword(token: string, newPassword: string) {
-    const url = `http://localhost:3000/user/forgetpassword/${token}`;
+    const url = `https://localhost:3000/user/forgetpassword/${token}`;
     const body = { newPassword };
 
     return this.http.post(url, body);
