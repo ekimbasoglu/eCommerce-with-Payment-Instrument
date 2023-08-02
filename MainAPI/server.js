@@ -61,6 +61,18 @@ app.use('/product', products);
 
 
 // Start the server
-app.listen(process.env.PORT || 80, () => {
-    console.log(`Server is running on port ${process.env.PORT}`);
+// app.listen(process.env.PORT || 80, () => {
+//     console.log(`Server is running on port ${process.env.PORT}`);
+// });
+
+https.createServer(
+    // Provide the private and public key to the server by reading each
+    // file's content with the readFileSync() method.
+    {
+        key: fs.readFileSync("key.pem"),
+        cert: fs.readFileSync("cert.pem"),
+    },
+    app
+).listen(process.env.PORT, () => {
+    console.log("server is runing at port", process.env.PORT);
 });
