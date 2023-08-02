@@ -13,6 +13,8 @@ import { FormsModule } from '@angular/forms';
 import { LogoutComponent } from './logout/logout.component';
 import { HttpClientModule } from '@angular/common/http';
 import { NavbarComponent } from './navbar/navbar.component';
+import { ForgetpasswordComponent } from './forgetpassword/forgetpassword.component';
+import { ForgetpasswordafterComponent } from './forgetpasswordafter/forgetpasswordafter.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { NavbarComponent } from './navbar/navbar.component';
     RegisterComponent,
     LogoutComponent,
     NavbarComponent,
+    ForgetpasswordComponent,
+    ForgetpasswordafterComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
   providers: [],

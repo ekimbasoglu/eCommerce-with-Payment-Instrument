@@ -217,7 +217,7 @@ exports.forgetpassword = async (req, res) => {
             from: 'ecommerse-reset-password@hotmail.com',
             to: email,
             subject: 'Password Reset',
-            text: `Click the following link to reset your password: http://localhost:3000/user/forgetpassword/${token}`,
+            text: `Click the following link to reset your password: http://localhost:4200/resetpassword?token=${token}`,
         };
 
         transporter.sendMail(mailOptions, (error, info) => {

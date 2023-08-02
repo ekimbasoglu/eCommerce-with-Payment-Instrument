@@ -10,6 +10,10 @@ import jwt_decode from 'jwt-decode';
   providedIn: 'root',
 })
 export class AuthService {
+  forgetBefore(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/user/forgetpassword`, { email });
+  }
+
   private apiUrl = 'http://localhost:3000'; // API Endpoint
   private authToken: string;
 

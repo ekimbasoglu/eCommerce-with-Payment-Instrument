@@ -8,6 +8,8 @@ import { AddProductComponent } from './add-product/add-product.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { LogoutComponent } from './logout/logout.component';
+import { ForgetpasswordComponent } from './forgetpassword/forgetpassword.component';
+import { ForgetpasswordafterComponent } from './forgetpasswordafter/forgetpasswordafter.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -27,6 +29,14 @@ const routes: Routes = [
   {
     path: 'logout',
     component: LogoutComponent,
+  },
+  {
+    path: 'forgetpassword',
+    component: ForgetpasswordComponent,
+  },
+  {
+    path: 'resetpassword',
+    component: ForgetpasswordafterComponent,
   },
   {
     path: 'product',
