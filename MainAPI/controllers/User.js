@@ -72,7 +72,7 @@ exports.register = async (req, res) => {
     } else {
         // Using RS256
         const path = require('path');
-        const privateKeyPath = path.join(__dirname, '../private.pem');
+        const privateKeyPath = path.join(__dirname, '../key.pem');
         const fs = require('fs');
         const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
 
@@ -256,10 +256,10 @@ exports.forgetpasswordafter = async (req, res) => {
         if (useSalt === 'true') {
             // Generate a salt
             const salt = await bcrypt.genSalt(saltRounds);
-            hashedPassword = await bcrypt.hash(password, salt);
+            hashedPassword = await bcrypt.hash(newPassword, salt);
         } else {
             // Using argon2 to hash the password
-            hashedPassword = await hashPassword(password);
+            hashedPassword = await hashPassword(newPassword);
         }
 
         // Update the user's password and clear the reset password token
