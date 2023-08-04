@@ -170,7 +170,7 @@ exports.login = function (req, res) {
                         if (err) {
                             return res.status(400).send('Something is wrong!');
                         } else if (result) {
-                            const token = jwt.sign({ email }, privateKey, { algorithm: 'RS256' });
+                            const token = jwt.sign({ user }, privateKey, { algorithm: 'RS256' });
                             return res.status(200).json({ token });
                         } else {
                             return res.status(400).send('Password is wrong!');

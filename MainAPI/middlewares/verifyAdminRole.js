@@ -11,8 +11,11 @@ const verifyAdminRole = (req, res, next) => {
 
     const token = bearerToken.substring(7); // Remove "Bearer " prefix
 
+    const fs = require('fs');
+    const publicKey = fs.readFileSync('public.pem', 'utf8');
+
     // Verify the JWT token
-    jwt.verify(token, process.env.SECRET, (err, decoded) => {
+    jwt.verify(token, publicKey, (err, decoded) => {
         if (err) {
             // Token is invalid or has expired
             return res.status(403).json({ error: 'Token is invalid or expired.' });

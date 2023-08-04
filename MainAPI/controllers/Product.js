@@ -31,8 +31,12 @@ exports.getAll = async (req, res) => {
         // Retrieve all products from the database
         const products = await Product.find();
 
+        if (products.length == 0) {
+            return res.status(400).send('There isnt any product available!');
+        }
+
         // Return the products as the response
-        res.json(products);
+        return res.status(200).json(products);
     } catch (error) {
         // Handle any errors that occur during the retrieval process
         res.status(500).json({ error: 'Failed to retrieve products' });
