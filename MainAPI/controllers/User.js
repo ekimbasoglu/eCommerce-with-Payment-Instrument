@@ -127,7 +127,8 @@ exports.login = function (req, res) {
                             if (err) {
                                 return res.status(400).send('Something is wrong!');
                             } else if (result) {
-                                const token = jwt.sign({ user }, process.env.SECRET); // Generate a token
+                                const token = jwt.sign({ user }, process.env.SECRET);
+
                                 return res.status(200).json({ token });
                             } else {
                                 return res.status(400).send('Password is wrong!');
@@ -136,8 +137,10 @@ exports.login = function (req, res) {
                     } else {
                         try {
                             const match = await argon2.verify(user.password, password);
+
                             if (match == true) {
-                                const token = jwt.sign({ user }, process.env.SECRET); // Generate a token
+                                const token = jwt.sign({ user }, process.env.SECRET);
+
                                 return res.status(200).json({ token });
                             } else {
                                 return res.status(400).send('Password is wrong!');
@@ -156,7 +159,7 @@ exports.login = function (req, res) {
     } else {
         // Using RS256
         const path = require('path');
-        const privateKeyPath = path.join(__dirname, '../private.pem');
+        const privateKeyPath = path.join(__dirname, '../key.pem');
         const fs = require('fs');
         const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
 
@@ -168,8 +171,7 @@ exports.login = function (req, res) {
                             return res.status(400).send('Something is wrong!');
                         } else if (result) {
                             const token = jwt.sign({ email }, privateKey, { algorithm: 'RS256' });
-
-                            res.status(200).send('User registered successfully').json(result);
+                            return res.status(200).json({ token });
                         } else {
                             return res.status(400).send('Password is wrong!');
                         }
@@ -249,9 +251,16 @@ exports.forgetpasswordafter = async (req, res) => {
             return res.status(404).json({ message: 'Invalid or expired reset token' });
         }
 
-        // Generate a salt
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(newPassword, salt);
+        var hashedPassword;
+
+        if (useSalt === 'true') {
+            // Generate a salt
+            const salt = await bcrypt.genSalt(saltRounds);
+            hashedPassword = await bcrypt.hash(password, salt);
+        } else {
+            // Using argon2 to hash the password
+            hashedPassword = await hashPassword(password);
+        }
 
         // Update the user's password and clear the reset password token
         user.password = hashedPassword;
