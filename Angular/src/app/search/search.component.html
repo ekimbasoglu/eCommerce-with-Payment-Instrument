@@ -1,0 +1,17 @@
+<app-navbar></app-navbar>
+
+<!-- Search Component   -->
+<div class="container mx-auto p-4">
+  <h1 class="text-2xl font-semibold mb-4">{{keyword}}</h1>
+  <div class="grid grid-cols-3 gap-4">
+    <!-- Product Card 1 -->
+    <div class="bg-white rounded-lg p-4 shadow" *ngFor="let product of products">
+      <img src="{{product.image}}" alt="{{product.name}}" class="w-full h-32 object-cover mb-4">
+      <h2 class="text-lg font-bold mb-2">{{product.name}}</h2>
+      <p class="text-gray-500 mb-2">{{product.price}}</p>
+      <p class="text-gray-500 mb-2">{{product.description}}</p>
+      <button class="bg-blue-500 text-white py-2 px-4 rounded" (click)="addToCart(product.name)">Add to Cart</button>
+    </div>
+
+  </div>
+</div>

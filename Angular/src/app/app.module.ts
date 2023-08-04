@@ -15,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ForgetpasswordComponent } from './forgetpassword/forgetpassword.component';
 import { ForgetpasswordafterComponent } from './forgetpasswordafter/forgetpasswordafter.component';
+import { SearchComponent } from './search/search.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { ForgetpasswordafterComponent } from './forgetpasswordafter/forgetpasswo
     NavbarComponent,
     ForgetpasswordComponent,
     ForgetpasswordafterComponent,
+    SearchComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
   providers: [],

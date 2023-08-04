@@ -10,6 +10,7 @@ import { RegisterComponent } from './register/register.component';
 import { LogoutComponent } from './logout/logout.component';
 import { ForgetpasswordComponent } from './forgetpassword/forgetpassword.component';
 import { ForgetpasswordafterComponent } from './forgetpasswordafter/forgetpasswordafter.component';
+import { SearchComponent } from './search/search.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -30,6 +31,11 @@ const routes: Routes = [
     path: 'logout',
     component: LogoutComponent,
   },
+  {
+    path: 'search',
+    component: SearchComponent,
+  },
+  { path: 'search/:keyword', component: SearchComponent },
   {
     path: 'forgetpassword',
     component: ForgetpasswordComponent,
