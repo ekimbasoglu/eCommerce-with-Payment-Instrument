@@ -87,26 +87,47 @@ exports.add = async (req, res) => {
     }
 };
 
-exports.submit = async (req, res) => {
-    const productId = req.params.productId,
-        userId = req.params.userId;
+exports.remove = async (req, res) => {
+    // To check the credentials
+    const userEmail = req.body.email;
 
-    User.findById({ preorders: productId })
-        .then(user => {
-            if (!user) {
-                throw new Error('User not found');
+    //Missing fields
+    if (!userEmail) {
+        return res.status(400).send('Email is missing!');
+    }
+
+    // Verifying auth-ed user 
+    const bearerToken = req.headers.authorization;
+    if (!bearerToken) {
+        return res.status(401).json({ error: 'Authorization token not found' });
+    }
+    const token = bearerToken.substring(7); // Remove "Bearer " prefix
+    const fs = require('fs');
+    const publicKey = fs.readFileSync('public.pem', 'utf8');
+
+    jwt.verify(token, publicKey, (err, decoded) => {
+        if (err) {
+            res.status(403).json({ error: 'Access denied.' });
+        } else {
+            if (decoded.user.email !== userEmail) {
+                return res.status(403).json({ error: 'Access denied.' });
             }
+        }
+    });
 
-            Object.values(user.preorders).forEach(preorder => {
-                if (preorder == productId) {
-                    return preorder.pop();
-                }
-            });
-        })
-        .then(updatedUser => {
-            console.log('Updated User:', updatedUser);
-        })
-        .catch(error => {
-            console.error(error);
-        });
+    // To find and delete the cart
+    try {
+        // Find and delete the cart based on the provided userEmail
+        const deletedCart = await Cart.deleteOne({ userEmail });
+
+        if (deletedCart.deletedCount === 0) {
+            return res.status(404).json({ error: 'Cart not found' });
+        }
+
+        return res.status(200).send({ message: 'Cart deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+
 };
