@@ -41,13 +41,32 @@ export class ProductService {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('authToken')}`,
     });
-    console.log(`Bearer ${localStorage.getItem('authToken')}`);
     return this.http
       .post(
         `${this.apiUrl}/cart/add`,
         { name: productName, email, amount },
         { headers }
       )
+      .pipe(tap((response: any) => {}));
+  }
+
+  getBasket(userEmail: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+    });
+    return this.http
+      .post(`${this.apiUrl}/cart/get`, { userEmail }, { headers })
+      .pipe(tap((response: any) => {}));
+  }
+
+  removeBasket(userEmail: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+    });
+    return this.http
+      .post(`${this.apiUrl}/cart/delete`, { userEmail }, { headers })
       .pipe(tap((response: any) => {}));
   }
 }

@@ -21,6 +21,10 @@ export class NavbarComponent implements OnInit {
     this.router.navigate(['/register']);
   }
 
+  redirectDashboard() {
+    this.router.navigate(['/dashboard']);
+  }
+
   ngOnInit(): void {
     this.isLoggedIn = this.authService.isLoggedIn();
   }

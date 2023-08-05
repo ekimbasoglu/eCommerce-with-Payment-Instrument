@@ -3,14 +3,8 @@
   <h2
     class="mb-4 text-2xl font-bold text-gray-900 dark:text-white lg:text-center lg:text-4xl lg:font-extrabold lg:leading-snug 2xl:px-48"
   >
-    Tailwind CSS Components
+    Dashboard
   </h2>
-  <p
-    class="mb-10 text-lg font-normal text-gray-500 dark:text-gray-400 lg:mb-16 lg:text-center lg:text-xl xl:px-64"
-  >
-    Explore the whole collection of open-source web components and interactive
-    elements built with the utility classes from Tailwind CSS
-  </p>
   <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
     <a
       *ngFor="let component of components"
@@ -19,7 +13,8 @@
     >
       <div
         class="flex items-center justify-between rounded-t-lg border-b border-gray-200 bg-gray-50 py-2.5 px-5 dark:border-gray-700 dark:bg-gray-700"
-      >
+        (click)="alert()"
+        >
         <span class="text-lg font-medium text-gray-500 dark:text-gray-400">{{
           component.title
         }}</span>
@@ -58,3 +53,57 @@
     </a>
   </div>
 </div>
+<body class="bg-gray-100">
+  <div class="container mx-auto mt-10">
+    <div class="flex shadow-md my-10" *ngIf="noProducts">
+      <div class="w-full bg-white px-10 py-10">
+        <div class="flex justify-between border-b pb-8">
+          <h1 class="font-semibold text-2xl">Shopping Cart</h1>
+          <h2 class="font-semibold text-2xl">{{totalProducts}} Items</h2>
+        </div>
+        <div class="flex mt-10 mb-5">
+          <h3 class="font-semibold text-gray-600 text-xs uppercase w-2/5">Product Details</h3>
+          <h3 class="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 text-center">Quantity</h3>
+          <h3 class="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 text-center">Price</h3>
+        </div>
+
+
+        <div class="flex items-center hover:bg-gray-100 -mx-8 px-6 py-5" *ngFor="let product of products">
+          <div class="flex w-2/5">
+            <!-- product -->
+            <div class="w-20">
+              <img class="h-24" src="{{product.image}}" alt="">
+            </div>
+            <div class="flex flex-col justify-between ml-4 flex-grow">
+              <span class="font-bold text-sm">{{product.name}}</span>
+            </div>
+          </div>
+          <div class="flex justify-center w-1/5">
+
+            <input class="mx-2 border text-center w-8" type="text" value="{{product.amount}}">
+
+          </div>
+          <span class="text-center w-1/5 font-semibold text-sm">{{product.price}}&euro;</span>
+        </div>
+
+        <div class="flex mt-10 mb-5">
+          <h3 class="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 text-center">Total Price: {{totalPrice}}</h3>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <a routerLink="/search/" class="flex font-semibold text-indigo-600 text-sm mt-10">
+
+          <svg class="fill-current mr-2 text-indigo-600 w-4" viewBox="0 0 448 512"><path d="M134.059 296H436c6.627 0 12-5.373 12-12v-56c0-6.627-5.373-12-12-12H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.569 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296z"/></svg>
+          Continue Shopping
+        </a>
+        <a (click)="removeBasket()" class="flex font-semibold text-red-600 text-sm mt-10">
+
+          <svg class="fill-current mr-2 text-red-600 w-4"  xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24" viewBox="0 0 24 24">
+            <path d="M12,2C6.47,2,2,6.47,2,12c0,5.53,4.47,10,10,10s10-4.47,10-10C22,6.47,17.53,2,12,2z M16.707,15.293 c0.391,0.391,0.391,1.023,0,1.414C16.512,16.902,16.256,17,16,17s-0.512-0.098-0.707-0.293L12,13.414l-3.293,3.293 C8.512,16.902,8.256,17,8,17s-0.512-0.098-0.707-0.293c-0.391-0.391-0.391-1.023,0-1.414L10.586,12L7.293,8.707 c-0.391-0.391-0.391-1.023,0-1.414s1.023-0.391,1.414,0L12,10.586l3.293-3.293c0.391-0.391,1.023-0.391,1.414,0 s0.391,1.023,0,1.414L13.414,12L16.707,15.293z"></path>
+        </svg>
+          Cancel the basket
+        </a>
+        </div>
+      </div>
+    </div>
+  </div>
