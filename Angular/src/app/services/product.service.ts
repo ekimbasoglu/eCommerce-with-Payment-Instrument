@@ -14,21 +14,40 @@ export class ProductService {
     return this.http.post(`${this.apiUrl}/user/forgetpassword`, { email });
   }
 
-  private apiUrl = 'https://localhost:3000/product/get'; // API Endpoint
+  private apiUrl = 'https://localhost:3000'; // API Endpoint
   private authToken: string;
 
   constructor(private http: HttpClient, private router: Router) {}
 
   // wout keyword
   getAll(): Observable<any> {
-    return this.http.get(this.apiUrl);
+    return this.http.get(`${this.apiUrl}/product/get`);
   }
 
   get(keyword: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/`, { keyword }).pipe(
+    return this.http.post(`${this.apiUrl}/product/get`, { keyword }).pipe(
       tap((response: any) => {
         const token = response;
       })
     );
+  }
+
+  addToCart(
+    productName: string,
+    email: string,
+    amount: number
+  ): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+    });
+    console.log(`Bearer ${localStorage.getItem('authToken')}`);
+    return this.http
+      .post(
+        `${this.apiUrl}/cart/add`,
+        { name: productName, email, amount },
+        { headers }
+      )
+      .pipe(tap((response: any) => {}));
   }
 }

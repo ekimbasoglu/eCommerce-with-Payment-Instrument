@@ -20,6 +20,7 @@ export class SearchComponent implements OnInit {
 
   keyword: string;
   products: any[] = [];
+  defaultAmount = 1;
 
   ngOnInit(): void {
     this.keyword = this.route.snapshot.params['keyword']!;
@@ -41,7 +42,29 @@ export class SearchComponent implements OnInit {
     );
   }
 
-  addToCart(item: string) {
-    this.cartItems.push(item);
+  addToCart(productName: string) {
+    type User = {
+      _id: any;
+      name: string;
+      email: string;
+      surname: string;
+      roles: string;
+    };
+    const user: User = this.authService.getUser();
+    this.productService
+      .addToCart(productName, user.email, this.defaultAmount)
+      .subscribe(
+        (response) => {
+          alert('Product added to the cart!');
+          this.router.navigate(['/dashboard']);
+          console.log(this.products);
+        },
+        (error) => {
+          console.error('Error:', error);
+          alert('Something went wrong! please login again');
+          localStorage.removeItem('authToken');
+          this.router.navigate(['/login']);
+        }
+      );
   }
 }

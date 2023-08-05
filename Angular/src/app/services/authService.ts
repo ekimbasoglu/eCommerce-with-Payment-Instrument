@@ -31,13 +31,24 @@ export class AuthService {
       );
   }
 
+  // Returns user variables without password
+  getUser() {
+    // Check the token first
+    if (localStorage.getItem('authToken') === undefined) {
+      alert('User is not logged in!');
+      this.router.navigate(['/login']);
+    }
+    const currentToken = localStorage.getItem('authToken')!;
+    return this.convertTokenToUserModel(currentToken)!;
+  }
+
   private cacheToken(token: string): void {
     localStorage.setItem('authToken', token);
     this.authToken = token;
   }
 
   private convertTokenToUserModel(token: string): void {
-    const user = this.convertTokenToUser(token);
+    return this.convertTokenToUser(token);
   }
 
   private convertTokenToUser(token: string): any {
