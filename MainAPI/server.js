@@ -53,10 +53,12 @@ app.get('/', (req, res) => {
 // Imports 
 const users = require('./routes/User');
 const products = require('./routes/Product');
+const cart = require('./routes/Cart');
 
 //Routers
 app.use('/user', users);
 app.use('/product', products);
+app.use('/cart', cart);
 
 
 
