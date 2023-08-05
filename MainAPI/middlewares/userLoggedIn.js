@@ -39,7 +39,7 @@ const userLoggedIn = (req, res, next) => {
         });
     } else {
         const fs = require('fs');
-        const publicKey = fs.readFileSync('../public.pem', 'utf8');
+        const publicKey = fs.readFileSync('public.pem', 'utf8');
 
         // Assuming you have a user object or user data stored in the request object
         const bearerToken = req.headers.authorization;
@@ -52,10 +52,20 @@ const userLoggedIn = (req, res, next) => {
 
         // Verify the JWT token
         jwt.verify(token, publicKey, (err, decoded) => {
-            if (err) {
-                res.status(403).json({ error: 'Access denied.' });
-            } else {
+            // Token is valid
+
+            // If token doesn't have roles
+            if (!decoded.user.roles) {
+                return res.status(403).json({ error: 'Access denied.' });
+            }
+
+            // Check if the user has an admin role
+            if (decoded.user.roles === 'User' || decoded.user.roles === 'Admin') {
+                // User is an admin, proceed to the next middleware or route handler
                 next();
+            } else {
+                // User is not authorized, send an error response
+                res.status(403).json({ error: 'Access denied.' });
             }
         });
 
