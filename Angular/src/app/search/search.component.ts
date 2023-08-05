@@ -24,17 +24,25 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.keyword = this.route.snapshot.params['keyword']!;
+    this.fetchProducts(this.keyword);
     if (this.keyword === undefined) {
       this.keyword = 'all the results:';
-      this.fetchProducts();
     }
   }
 
-  fetchProducts() {
+  fetchProducts(keyword: string) {
     this.productService.getAll().subscribe(
       (data) => {
-        this.products = data;
-        console.log(this.products);
+        if (keyword === undefined) {
+          this.products = data;
+        } else {
+          let regexPattern = `^(${keyword})`;
+          let regEx = new RegExp(regexPattern);
+          this.products = data.filter((product: any) =>
+            regEx.test(product.name)
+          );
+          let test = '';
+        }
       },
       (error) => {
         console.error('Error:', error);

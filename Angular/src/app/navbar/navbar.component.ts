@@ -24,14 +24,6 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
     this.isLoggedIn = this.authService.isLoggedIn();
   }
-
-  // pseudo
-  // Redirect to the search page with query
-
-  // if => empty => Redirect to search page which will show all the products
-  // if => (keyword) => Redirect to the search page => will show based on Mongoose search
-
-  // First do the step 1
   search(keyword: string) {
     this.router.navigate(['/search', keyword]);
   }
