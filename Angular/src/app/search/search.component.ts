@@ -59,6 +59,7 @@ export class SearchComponent implements OnInit {
       roles: string;
     };
     const user: User = this.authService.getUser();
+
     this.productService
       .addToCart(productName, user.email, this.defaultAmount)
       .subscribe(
@@ -75,5 +76,4 @@ export class SearchComponent implements OnInit {
         }
       );
   }
-
 }

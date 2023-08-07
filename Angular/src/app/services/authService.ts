@@ -33,12 +33,12 @@ export class AuthService {
 
   // Returns user variables without password
   getUser() {
-    // Check the token first
-    if (localStorage.getItem('authToken') === undefined) {
+    const currentToken = localStorage.getItem('authToken')!;
+
+    if (currentToken == null) {
       alert('User is not logged in!');
       this.router.navigate(['/login']);
     }
-    const currentToken = localStorage.getItem('authToken')!;
     return this.convertTokenToUserModel(currentToken)!;
   }
 
